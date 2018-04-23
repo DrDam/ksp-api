@@ -1,0 +1,6 @@
+/nbproject/private/
+composer.phar
+/vendor/
+composer.lock
+/nbproject/
+/AuthentDB
