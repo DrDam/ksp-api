@@ -72,9 +72,16 @@ class KSPDataLib
                 if(is_array($keys)) {
                     $item = [];
                     foreach($keys as $key_item) {
-                        if(isset($part_item[$key_item])) {
-                            $item[$key_item] = $part_item[$key_item];
+                        
+                        $part_data = $part_item;
+                        $key_data = explode('.', $key_item);
+                        foreach($key_data as $diver) {
+                            if(isset($part_data[$diver])) {
+                                $part_data = $part_data[$diver];
+                            }
                         }
+                        $item[$key_item] = $part_data;
+
                     }
                     $part_item = $item;
                 }

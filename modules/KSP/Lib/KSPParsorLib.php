@@ -124,17 +124,18 @@ class KSPParsorLib
                 return $data;
             }
 
-            if (strstr($line, '=')) {
-                $elem = explode('=', $ligne);
-                //var_dump($elem);
-                $key = trim($elem[0]);
-                if (count($elem) - 1 == 1) {
-                    $value = trim($elem[1]);
-                } else {
-                    array_shift($elem);
-                    $value = implode(' --- ', $elem);
+            // If line containe data
+            if (strstr($ligne, '=')) {
+                
+                // Delete comments
+                if(strstr($ligne, '//')) {
+                    $exploded = explode('//', $ligne);
+                    $ligne = $exploded[0];
                 }
-
+                
+                $elem = explode('=', $ligne);
+                $key = trim($elem[0]);
+                $value = trim($elem[1]);
                 $this->putData($data, $key, $value);
 
                 $nb_line++;

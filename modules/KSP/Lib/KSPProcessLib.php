@@ -54,6 +54,7 @@ class KSPProcessLib
             'CoPOffset' => 'vector_offset',
             'CoLOffset' => 'vector_offset',
             'attachRules' => 'attach_rules',
+            'fxOffset' => 'local_offset',
          //  ModuleColorChanger -> toggleInFlight
          //  DRAG_CUBE -> cube
 
