@@ -2,7 +2,7 @@
 
 namespace KSP;
 
-use KSP\ParsorPart;
+use KSP\ParsorTranslations;
 use KSP\KSPDataLibBase;
 use KSP\KSPDataInterface;
 /**
@@ -23,7 +23,27 @@ class TranslationLib  extends KSPDataLibBase implements KSPDataInterface
     
     protected function makeData()
     {
-        $this->data = [];
+        $translation_pasror = new ParsorTranslations();
+        $this->data = $translation_pasror->parse();
     }
     
+    public function getLocals() {
+        return ['locals' => $this->data['locals']];
+    }
+    
+    public function getTranslations($lang, $keys) {
+        $translations = [];
+        
+        foreach($keys as $key) {
+            if(isset($this->data['strings']['#'.$key])) {
+                $item = $this->data['strings']['#'.$key];
+                $translations[$key] = $item[$lang];
+            }
+        }
+        
+        $output = [];
+        $output['langcode'] = $lang;
+        $output['translations'] = $translations;
+        return $output;
+    }
 }

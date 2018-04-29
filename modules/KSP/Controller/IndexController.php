@@ -50,19 +50,19 @@ class IndexController extends ControllerBase
         $info = [];
         
         $callback1 = [];
-        $callback1['title'] = 'Fabrication d\'index.';
-        $callback1['description'] = 'Retourne un index à partir de la clef demandé (voir liste ci-après -- la clef est sensible à la casse)';
-        $callback1['option'] = 'Le paramètre \'with_parts\' permet de renvoyer la liste des indentifiant des pieces.';
-        $callback1['exemples'][] = '/index/category : retourne la liste des catégories de pièces.';
-        $callback1['exemples'][] = '/index/TechRequired?with_parts : retourne la liste des techno nécessaire au dévérouillage des pieces, ainsi que les pièces impactées.';
+        $callback1['title'] = 'List all data of an index';
+        $callback1['description'][] = 'Return an index from used key ( see below the list of available keys - casse sensitiv)';
+        $callback1['option']['with_parts'] = 'Choose if you want directly the list of parts form each index items';
+        $callback1['exemples'][] = '/index/category : Return all "category" and the number of part inside.';
+        $callback1['exemples'][] = '/index/TechRequired?with_parts : Return all "TechRequired" items and the list of parts inside.';
         $clefs = [];
-        $callback1['clefs'] = $this->searcher->getClefs();
+        $callback1['keys'] = $this->searcher->getClefs();
         $info['index/*'] = $callback1;
         
         $callback2 = [];
-        $callback2['title'] = 'Détail d\'un élement d\'index';
-        $callback2['description'] = 'Retourne la liste des identifiants des pièces correspondante à un élément d\'un index (voir \'/index/*\')';
-        $callback2['exemples'][] = '/index/category/Control : retourne la liste des pièces dont la catégory est \'Control\'.';
+        $callback2['title'] = 'See list of parts inside a index item';
+        $callback2['description'][] = 'Return the list of part attached to a index item (see \'/index/*\' callback)';
+        $callback2['exemples'][] = '/index/category/Control : Return the list of part attached to a index \'category\'  and item \'Control\'.';
         $info['index/*/*'] = $callback2;
         
         return ['datas'=>$info];

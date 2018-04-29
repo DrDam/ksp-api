@@ -68,20 +68,27 @@ class PartController extends ControllerBase
         $info = [];
         
         $callback1 = [];
-        $callback1['title'] = 'Detail d\'une pièce';
-        $callback1['description'] = 'Retourne toute les informations connus d\'une pièce ( l\'identifiant de la pièce est sensible à la casse)';
-        $callback1['exemples'][] = '/part/sasModule : retourne les information de la piece sasModule.';
-        $callback1['option'][] = 'Le paramètre \'mode\' est optionel ( light par défaut, full, custom).';
-        $callback1['option'][] = 'Le paramètre \'key_list\' est obligatoire pour le mode \'custom\' contient la liste des attributs séparées par un point-virgule \';\'.';        
+        $callback1['title'] = 'Get part data';
+        $callback1['description'][] = 'Return all informations knowed from a part ( part name are case sensitiv)';
+        $callback1['description'][] = 'Translated values "autoLoc_XXXXX" formed, need to be request with "translations" callbacks';
+        $callback1['option']['mode'][] = 'The type of output ( light par défaut, full, custom) defining which field are returned.';
+        $callback1['option']['mode'][] = 'the default list ( mode = "light" ) are : name,provider,title,description,author,category,subcategory,mass.';
+        $callback1['option']['key_list'][] = 'The \'key_list\' parameter ( mandatory in "custom" mode) list all field returned, separated by ";".';        
+        $callback1['option']['key_list'][] = 'Note : You can select a sub key with "key.subkey" syntax';        
+        $callback1['exemples'][] = '/part/sasModule : Return light collection of data for sasModule part.';
+        $callback1['exemples'][] = '/part/sasModule?mode=custom&key_list=title;author : Return only "title" and "author" information for sasModule part.';
         $info['part/*'] = $callback1;
         
         $callback2 = [];
-        $callback2['title'] = 'Détail de plusieurs pièces';
-        $callback2['description'] = 'Retourne toute les informations connus de plusieurs pièces en un appel';
-        $callback2['option'][] = 'Le paramètre \'part_name\' est obligatoire contient la liste des pièces demandée séparées par un point-virgule \';\'.';
-        $callback2['option'][] = 'Le paramètre \'mode\' est optionel ( light par défaut, full, custom).';
-        $callback2['option'][] = 'Le paramètre \'key_list\' est obligatoire pour le mode \'custom\' contient la liste des attributs séparées par un point-virgule \';\'.';        
-        $callback2['exemples'][] = '/parts?part_name=avionicsNoseCone;sasModule : retourne le détail des pièces avionicsNoseCone et sasModule';
+        $callback2['title'] = 'Get data for multiple parts';
+        $callback2['description'][] = 'Return all informations knowed from the differents parts ( part name are case sensitiv)';
+        $callback2['description'][] = 'Translated values "autoLoc_XXXXX" formed, need to be request with "translations" callbacks';
+        $callback2['option']['part_name'] = 'This parameter contain list of part name separated by a \';\'.';
+        $callback2['option']['mode'][] = 'The type of output ( light par défaut, full, custom) defining which field are returned.';
+        $callback2['option']['mode'][] = 'the default list ( mode = "light" ) are : name,provider,title,description,author,category,subcategory,mass.';
+        $callback2['option']['key_list'][] = 'The \'key_list\' parameter ( mandatory in "custom" mode) list all field returned, separated by ";".';        
+        $callback2['option']['key_list'][] = 'Note : You can select a sub key with "key.subkey" syntax';        
+        $callback2['exemples'][] = '/parts?part_name=avionicsNoseCone;sasModule?mode=full : Return ALL data for avionicsNoseCone and sasModule parts';
         $info['parts'] = $callback2;
         
         return ['datas'=>$info];
