@@ -4,7 +4,7 @@ namespace KSP;
 
 use Japloora\ControllerBase;
 use Japloora\Config;
-use KSP\KSPSearchLib;
+use KSP\SearchPart;
 
 class IndexController extends ControllerBase
 {
@@ -12,7 +12,7 @@ class IndexController extends ControllerBase
 
     public function __construct()
     {
-        $this->searcher = new KSPSearchLib();
+        $this->searcher = new SearchPart();
     }
     
     public static function defineRoutes()

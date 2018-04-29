@@ -2,14 +2,14 @@
 
 namespace KSP;
 
-use KSP\KSPProcessLib;
+use KSP\ProcessPart;
 
 /**
  * Description of KSPParsorLib
  *
  * @author drdam
  */
-class KSPParsorLib
+class ParsorPart
 {
 
     private static $instance = null;
@@ -19,13 +19,13 @@ class KSPParsorLib
     
     private function __construct()
     {
-        $this->processor = new KSPProcessLib();
+        $this->processor = new ProcessPart();
     }
 
     public static function create()
     {
         if (self::$instance === null) {
-            self::$instance = new KSPParsorLib();
+            self::$instance = new ParsorPart();
         }
         return self::$instance;
     }

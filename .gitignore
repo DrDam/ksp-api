@@ -3,5 +3,5 @@ composer.phar
 /vendor/
 /nbproject/
 /AuthentDB
-/partData/*
+/DATABASE
 grumphp.yml

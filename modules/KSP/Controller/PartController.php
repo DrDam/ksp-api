@@ -139,7 +139,7 @@ class PartController extends ControllerBase
             $keys = ['name','provider','title','description','author','category','subcategory','mass'];
         }
         
-        return $this->lib->getParts($parts, $keys);
+        return $this->lib->getProvider('Parts')->getParts($parts, $keys);
         
     }
 }

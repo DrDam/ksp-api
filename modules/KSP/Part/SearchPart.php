@@ -2,19 +2,19 @@
 
 namespace KSP;
 
-use KSP\KSPDataLib;
+use KSP\PartLib;
 
 /**
  * Description of KSPSearcherLib
  *
  * @author drdam
  */
-class KSPSearchLib {
+class SearchPart {
     
     private $data = [];
     
     public function __construct() {
-        $dataLib = new KSPDataLib();
+        $dataLib = new PartLib();
         $this->data = $dataLib->dump();
     }
     

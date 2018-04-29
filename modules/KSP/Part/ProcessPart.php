@@ -2,7 +2,7 @@
 
 namespace KSP;
 
-class KSPProcessLib
+class ProcessPart
 {
 
     public function getProcessors()
