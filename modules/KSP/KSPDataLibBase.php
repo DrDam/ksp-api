@@ -28,9 +28,12 @@ abstract class KSPDataLibBase {
         }
     }
     
-    public function dump()
+    public function dump($sub = '')
     {
-        return $this->data;
+        if(!isset($this->data['sub'])) {
+            return $this->data;
+        }
+        return $this->data['sub'];
     }
     
     private function createDb() {

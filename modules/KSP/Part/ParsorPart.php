@@ -11,29 +11,20 @@ use KSP\ProcessPart;
  */
 class ParsorPart
 {
-
-    private static $instance = null;
     private $dir = './GameData';
     private $processor = null;
     private $partData = [];
+    private $modules = [];
     
-    private function __construct()
+    public function __construct()
     {
         $this->processor = new ProcessPart();
-    }
-
-    public static function create()
-    {
-        if (self::$instance === null) {
-            self::$instance = new ParsorPart();
-        }
-        return self::$instance;
     }
 
     public function parse()
     {
         $this->navigate($this->dir);
-        return $this->partData;
+        return ['parts' => $this->partData, 'modules' => $this->modules];
     }
 
     private function navigate($dir)
@@ -46,14 +37,19 @@ class ParsorPart
             } else {
                 if (substr(trim($path), -3, 3) == 'cfg' && strstr($dir, 'Parts') != false) {
                     $dirdata = explode('/', $dir);
-                    $partData = $this->extract($path);
-                    if ($partData == null) {
+                    $extracted = $this->processor->extract($path);
+                    if ($extracted == null) {
                         continue;
                     }
-                    $provider_tag = $this->getProvider($dirdata);             
+                    $provider_tag = $this->getProvider($dirdata);   
+                    $partData = $extracted['part'];
+                    $partModules = $extracted['modules'];
+
                     $partData['category'] = isset($partData['category']) ? $partData['category'] : 'none' ;
                     $partData['provider'] = $provider_tag;
+                    
                     $this->partData[$partData['name']] = $partData;
+                    $this->updateModules($partModules, $partData['name']);
                 } else {
                     continue;
                 }
@@ -61,6 +57,13 @@ class ParsorPart
         }
     }
 
+    private function updateModules($new_modules = [], $part_name = '') {
+        
+        foreach($new_modules as $key) {
+            $this->modules[$key][] = $part_name;
+        }
+    }
+    
     private function getProvider($dirData)
     {
                 
@@ -87,126 +90,5 @@ class ParsorPart
             }
         }
         return $directory;
-    }
-
-    private function extract($path)
-    {
-        $file = file($path);
-
-        $nb_line = 0;
-        $first_line = preg_replace('/[^A-Za-z0-9 _\-\+\&]/', '', trim($file[0]));
-        if ($first_line != 'PART') {
-            return null;
-        }
-        $data = $this->dive($file, $nb_line);
-        return array_pop($data);
-    }
-
-    private function dive($file, &$nb_line)
-    {
-        $data = array();
-        $max = count($file);
-        while ($nb_line < $max) {
-            $line = $file[$nb_line];
-            $ligne = trim($line);
-            if ($ligne == '' || substr($ligne, 0, 1) == '/') {
-                $nb_line++;
-                continue;
-            }
-
-            if (substr($ligne, 0, 1) == '{') {
-                $nb_line++;
-                continue;
-            }
-
-            if (substr($ligne, 0, 1) == '}') {
-                $nb_line++;
-                return $data;
-            }
-
-            // If line containe data
-            if (strstr($ligne, '=')) {
-                
-                // Delete comments
-                if(strstr($ligne, '//')) {
-                    $exploded = explode('//', $ligne);
-                    $ligne = $exploded[0];
-                }
-                
-                $elem = explode('=', $ligne);
-                $key = trim($elem[0]);
-                $value = trim($elem[1]);
-                $this->putData($data, $key, $value);
-
-                $nb_line++;
-                continue;
-            } else {
-                $type_sanitize = trim(str_replace('{', '', trim($line)));
-                $this->master = $type_sanitize;
-                $nb_line ++;
-                $sub = $this->dive($file, $nb_line);
-                $sub['item'] = $type_sanitize;
-                $this->putData($data, $type_sanitize, $sub);
-                continue;
-            }
-            $nb_line++;
-        }
-        return $data;
-    }
-
-    private function putData(&$data, $key, $value)
-    {
-
-        if (isset($value['name'])) {
-            $key = $value['name'];
-        }
-        if (isset($value['item'])) {
-            if ($value['item'] == 'RESOURCE') {
-                $key = 'RESSOURCE';
-            }
-            unset($value['item']);
-        }
-
-
-        $value = ($this->kspprocess($key, $value)) ? $this->kspprocess($key, $value) : $value;
-
-        if (isset($data[$key])) {
-            // if $data[$key] is a string
-            // => transform it to an array
-            if (!is_array($data[$key])) {
-                $array = array($data[$key], $value);
-                $data[$key] = $array;
-            } // if $data[$key] is an of element,
-            // not a list => transform to a list
-            elseif (!isset($data[$key][0])) {
-                $array = array($data[$key]);
-                $data[$key] = $array;
-                $data[$key][] = $value;
-            } // it's allready a list
-            else {
-                $data[$key][] = $value;
-            }
-        } else {
-            $data[$key] = $value;
-        }
-    }
-
-    private function kspprocess($key, $value)
-    {
-        if (is_array($value)) {
-            return $value;
-        }
-        
-        $old = '';
-        if ($key == 'key') {
-            $old = $key;
-            $key = $this->master;
-        }
-
-        $processors = $this->processor->getProcessors();
-        if (in_array($key, array_keys($processors))) {
-            $out = $this->processor->{$processors[$key]}($value);
-            return $out;
-        };
     }
 }

@@ -1,228 +1,140 @@
 <?php
 
 namespace KSP;
+use KSP\ProcessKeyPart;
 
 class ProcessPart
 {
-
-    public function getProcessors()
+    private $modules = [];
+    private $processor = NULL;
+    
+    public function __construct() {
+        $this->processor = new ProcessKeyPart();
+    }
+    
+    public function extract($path)
     {
-        return [
-            // Generics from Wiki
-            'node_stack_top' => 'node_stack',
-            'node_stack_top2' => 'node_stack',
-            'node_stack_bottom'=> 'node_stack',
-            'node_stack_connect1'=> 'node_stack',
-            'node_stack_connect2'=> 'node_stack',
-            'node_stack_connect3'=> 'node_stack',
-            'node_stack_bottom2'=> 'node_stack',
-            'node_stack_bottom2'=> 'node_stack',
-            'node_stack_bottom3'=> 'node_stack',
-            'node_stack_bottom4'=> 'node_stack',
-            'node_stack_direct' => 'node_stack',
+        unset($this->modules);
+        $this->modules = [];
+        $file = file($path);
+
+        $nb_line = 0;
+        $first_line = preg_replace('/[^A-Za-z0-9 _\-\+\&]/', '', trim($file[0]));
+        if ($first_line != 'PART') {
+            return null;
+        }
+
+        $data = $this->dive($file, $nb_line);
+        return ['part' => array_pop($data), 'modules' => array_unique($this->modules)];
+    }
+
+    private function dive($file, &$nb_line, $upper_key = '')
+    {
+        $data = array();
+        $max = count($file);
+        while ($nb_line < $max) {
+            $line = $file[$nb_line];
+            $ligne = trim($line);
+            if ($ligne == '' || substr($ligne, 0, 1) == '/') {
+                $nb_line++;
+                continue;
+            }
+
+            if (substr($ligne, 0, 1) == '{') {
+                $nb_line++;
+                continue;
+            }
+
+            if (substr($ligne, 0, 1) == '}') {
+                $nb_line++;
+                return $data;
+            }
+
+            // If line containe data
+            if (strstr($ligne, '=')) {
+                
+                // Delete comments
+                if(strstr($ligne, '//')) {
+                    $exploded = explode('//', $ligne);
+                    $ligne = $exploded[0];
+                }
+                
+                $elem = explode('=', $ligne);
+                $key = trim($elem[0]);
+                $value = trim($elem[1]);
+                $this->putData($data, $key, $value, $upper_key);
+
+                $nb_line++;
+                continue;
+            } else {
+                $type_sanitize = trim(str_replace('{', '', trim($line)));
+                $upper_key = $type_sanitize;
+                $nb_line ++;
+                $sub = $this->dive($file, $nb_line, $upper_key);
+                $sub['item'] = $type_sanitize;
+                $this->putData($data, $type_sanitize, $sub, $upper_key);
+                continue;
+            }
             
-            'emission'=>'prefab_emission',
-            'energy'=>'prefab_emission',
-            'speed'=>'prefab_emission',
-            'volume'=>'prefab_emission',
-            'pitch'=>'prefab_emission',
-            'localOffset'=>'local_offset',           
-            
-            'node_attach'=> 'node_stack',
-            
-            // Modules from Wiki
-            'ejectDirection' => 'vector_offset',
-            'center' => 'local_offset',
-            'bogeyAxis' => 'vector_offset',
-            'bogeyUpAxis' => 'vector_offset',
-            'steeringCurve' => 'steering_curve',
-            'torqueCurve' => 'torque_curve',
-            'fx_gasBurst_white' => 'fx_gasBurst',
-            'fx_exhaustFlame_blue' => 'fx_gasBurst',
-            'fx_exhaustLight_blue' => 'fx_gasBurst',
-            'fx_smokeTrail_light' => 'fx_gasBurst',
-            'fx_exhaustSparks_flameout' => 'fx_gasBurst',
-            'atmCurve' => 'atmosphere_curve',
-            'atmosphereCurve' => 'atmosphere_curve',
-            'velCurve' => 'velocity_curve',
-            'TemperatureModifier' => 'temperature_modifier',
-            'ThermalEfficiency' => 'thermal_efficiency',
-            
-            // Not in wiki
-            'CenterOfBuoyancy'=>'node_attach',
-            'CenterOfDisplacement'=>'node_attach',
-            'CoPOffset' => 'vector_offset',
-            'CoLOffset' => 'vector_offset',
-            'attachRules' => 'attach_rules',
-            'fxOffset' => 'local_offset',
-         //  ModuleColorChanger -> toggleInFlight
-         //  DRAG_CUBE -> cube
-
-            ];
-    }
-
-    public function node_stack($value)
-    {
-        $values = explode(',', $value);
-        $headers = array('Position X', 'Position Y', 'Position Z', 'Angular X', 'Angular Y', 'Angular Z');
-
-        if (count($values) > 6) {
-            $headers[] = 'Size';
+            $nb_line++;
         }
-        
-        $this->complete($headers, $values);     
-        
-        return array_combine($headers, $values);
-    }
-    
-    public function node_attach($value)
-    {
-
-        $values = explode(',', $value);
-        $headers = array('stack', 'SrfAttach', 'allowStack', 'allowSrfAttach', 'allowCollision');
-
-        $this->complete($headers, $values);      
-
-        return array_combine($headers, $values);
-    }
-    
-    public function vector_offset($value)
-    {
-        $values = explode(',', $value);
-        $headers = array('X Direction', 'Y Direction', 'Z Direction');
- 
-        $this->complete($headers, $values);      
-
-        return array_combine($headers, $values);
-    }
-    
-    public function prefab_emission($value)
-    {
-        $values = explode(' ', $value);
-        $headers = array('Throttle Range', 'Scale');
-
-        $this->complete($headers, $values);      
-
-        return array_combine($headers, $values);
-    }
-    
-    public function temperature_modifier($value)
-    {
-        $values = explode(' ', $value);
-        $headers = array('Temperature', 'Modifier');
-
-        $this->complete($headers, $values);      
-
-        return array_combine($headers, $values);
-    }
-    
-    public function thermal_efficiency($value)
-    {
-        $values = explode(' ', $value);
-        $headers = array('Temperature', 'Efficiency');
-
-        $this->complete($headers, $values);      
-
-        return array_combine($headers, $values);
-    }
-    public function local_offset($value)
-    {
-        $values = explode(',', $value);
-        $headers = array('X', 'Y', 'Z');
-
-        $this->complete($headers, $values);       
-
-        return array_combine($headers, $values);
-    }
-    
-    public function attach_rules($value)
-    {
-
-        $values = explode(',', $value);
-        $headers = array('Stack', 'Surface Attach', 'Allow Stack', 'Allow Surface Attach', 'Allow Collision');
-
-        $this->complete($headers, $values); 
-
-        return array_combine($headers, $values);
+        return $data;
     }
 
-    public function fx_gasBurst($value)
+    private function putData(&$data, $key, $value, $upper_key = '')
     {
-        $values = explode(',', $value);
-        $headers = array('Position X', 'Position Y', 'Position Z', 'Angular X', 'Angular Y', 'Angular Z', 'activate');
-
-        if (count($values) > 7) {
-            $headers[] = 'deactivate';
+        if (isset($value['name'])) {
+            $key = $value['name'];
+            if($upper_key == 'MODULE') {
+                $this->modules[] = $key;
+            }
         }
-        
-        $this->complete($headers, $values);     
-        
-        return array_combine($headers, $values);
-    }
-    
-    public function atmosphere_curve($value)
-    {
-        $values = explode(' ', $value);
-        $headers = array('Atmospher', 'ISP');
-        
-        if (count($values) > 2) {
-            $headers[] = 'slope left';
-            $headers[] = 'slope right';
-        }
-        
-        $this->complete($headers, $values);   
-        
-        return array_combine($headers, $values);
-    }
-
-    public function velocity_curve($value)
-    {
-
-        $values = explode(' ', $value);
-        $headers = array('Velocity', '% thrust Max');
-
-        if (count($values) > 2) {
-            $headers[] = 'slope left';
-            $headers[] = 'slope right';
+        if (isset($value['item'])) {
+            if ($value['item'] == 'RESOURCE') {
+                $key = 'RESSOURCE';
+            }
+            unset($value['item']);
         }
 
-        $this->complete($headers, $values);   
+        $value = ($this->kspprocess($key, $value, $upper_key)) ? $this->kspprocess($key, $value, $upper_key) : $value;
 
-        return array_combine($headers, $values);
-    }
-
-    public function steering_curve($value)
-    {
-
-        $values = explode(' ', $value);
-        $headers = array('Speed', 'Angle');
-
-        $this->complete($headers, $values); 
-        
-        return array_combine($headers, $values);
-    }
-
-    public function torque_curve($value)
-    {
-        $values = explode(' ', $value);
-        $headers = array('Speed', 'Torque X', 'Torque Y', 'Torque Z');
-        
-        $this->complete($headers, $values); 
-        
-        return array_combine($headers, $values);
-    }
-
-    
-    private function complete(&$headers, &$values) {
-        $this->completeSize($headers, count($values));
-        $this->completeSize($values, count($headers));  
-    }
-    
-    private function completeSize(&$array, $size) {
-        $i = 0;
-        while ($size > count($array)) {
-            $i++;
-            $array[] = '+'.$i;
+        if (isset($data[$key])) {
+            // if $data[$key] is a string
+            // => transform it to an array
+            if (!is_array($data[$key])) {
+                $array = array($data[$key], $value);
+                $data[$key] = $array;
+            } // if $data[$key] is an of element,
+            // not a list => transform to a list
+            elseif (!isset($data[$key][0])) {
+                $array = array($data[$key]);
+                $data[$key] = $array;
+                $data[$key][] = $value;
+            } // it's allready a list
+            else {
+                $data[$key][] = $value;
+            }
+        } else {
+            $data[$key] = $value;
         }
+    }
+
+    private function kspprocess($key, $value, $upper_key)
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+        
+        $old = '';
+        if ($key == 'key') {
+            $old = $key;
+            $key = $upper_key;
+        }
+
+        $processors = $this->processor->getProcessors();
+        if (in_array($key, array_keys($processors))) {
+            $out = $this->processor->{$processors[$key]}($value);
+            return $out;
+        };
     }
 }

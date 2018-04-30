@@ -9,7 +9,7 @@ namespace KSP;
 interface KSPDataInterface {
 
     public static function getProviderName();
-    public function dump();
+    public function dump($sub = '');
     public function __construct($do_reset = false);
     
 }
