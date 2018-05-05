@@ -3,6 +3,7 @@
 namespace KSP;
 
 use KSP\ProcessPart;
+use KSP\ModulesPart;
 
 /**
  * Description of KSPParsorLib
@@ -13,12 +14,14 @@ class ParsorPart
 {
     private $dir = './GameData';
     private $processor = null;
+    private $moduleProcessor = null;
     private $partData = [];
     private $modules = [];
     
     public function __construct()
     {
         $this->processor = new ProcessPart();
+        $this->moduleProcessor = new ModulesPart();
     }
 
     public function parse()
@@ -60,7 +63,10 @@ class ParsorPart
     private function updateModules($new_modules = [], $part_name = '') {
         
         foreach($new_modules as $key) {
-            $this->modules[$key][] = $part_name;
+            
+            $translated_key = $this->moduleProcessor->getModule($key);
+            
+            $this->modules[$translated_key][] = $part_name;
         }
     }
     
