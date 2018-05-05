@@ -27,11 +27,13 @@ class PartLib extends KSPDataLibBase implements KSPDataInterface
         $this->data = $parsor->parse();
     }
     public function getParts($parts = [], $keys = NULL) {
-        $out = [];
+        $parts_data = $this->data['parts'];
         
+        $out = [];
+
         foreach ($parts as $part) {
-            if(isset($this->data[$part])) {
-                $part_item = $this->data[$part];
+            if(isset($parts_data[$part])) {
+                $part_item = $parts_data[$part];
 
                 if(is_array($keys)) {
                     $item = [];

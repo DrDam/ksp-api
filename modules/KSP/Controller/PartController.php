@@ -130,10 +130,10 @@ class PartController extends ControllerBase
         $key_mode = 'light';
         $keys = NULL;
         if (isset($this->parameters['Query']['mode'])) {
-            $key_mode = $this->parameters['Query']['mode'];
+            $input_mode = $this->parameters['Query']['mode'];
             $modes = ['full', 'light', 'custom'];
-            if(!in_array($key_mode, $modes)) {
-                // Error
+            if(in_array($input_mode, $modes)) {
+                $key_mode = $input_mode;
             }
         }
         
