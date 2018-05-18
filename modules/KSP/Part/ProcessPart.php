@@ -92,6 +92,7 @@ class ProcessPart
         if (isset($value['item'])) {
             if ($value['item'] == 'RESOURCE') {
                 $key = 'RESSOURCE';
+                $this->modules[] = $key;
             }
             unset($value['item']);
         }
