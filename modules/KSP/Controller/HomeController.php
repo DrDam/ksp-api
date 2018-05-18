@@ -53,6 +53,7 @@ class HomeController extends ControllerBase
         
         $out = [];
         $out['title'] = 'Welcome in KSP-API';
+        $out['version'] = '1.0';
         $out['description'] = 'You\'ll find below the list of defined callbacks';
         $out['callbacks'] = $infos;
         return ['datas'=>$out];
