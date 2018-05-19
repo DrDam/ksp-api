@@ -16,12 +16,12 @@ class PartLib extends KSPDataLibBase implements KSPDataInterface
         return 'Parts';
     }
     
-    public function __construct($do_reset = false) {
+    public function __construct($do_reset = false, $dataProvides = []) {
         $this->dataFile = self::getProviderName();
         parent::__construct($do_reset);
     }
         
-    protected function makeData()
+    protected function makeData($dataProvides = [])
     {
         $parsor = new ParsorPart();
         $this->data = $parsor->parse();

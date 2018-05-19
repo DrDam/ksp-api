@@ -18,14 +18,19 @@ abstract class KSPDataLibBase {
     protected $data = [];
     protected $dataPath = './DATABASE';
     protected $dataFile = '';
-    public function __construct($do_reset = false)
+    
+    public function __construct($do_reset = false, $dataProvides = [])
     {        
         if ($do_reset === true) {
             unset($this->data);
-            $this->createDb();
+            $this->createDb($dataProvides);
         } else {
             $this->load();
         }
+    }
+    
+    public static function getDepedencies() {
+        return [];
     }
     
     public function dump($sub = '')
@@ -36,12 +41,12 @@ abstract class KSPDataLibBase {
         return $this->data['sub'];
     }
     
-    private function createDb() {
-        $this->makeData();
+    private function createDb($dataProvides = []) {
+        $this->makeData($dataProvides);
         $this->saveData();
     }
     
-    abstract protected function makeData();
+    abstract protected function makeData($dataProvides = []);
         
     private function saveData()
     {

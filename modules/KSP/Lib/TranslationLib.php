@@ -16,12 +16,12 @@ class TranslationLib  extends KSPDataLibBase implements KSPDataInterface
         return 'Translations';
     }
     
-     public function __construct($do_reset = false) {
+     public function __construct($do_reset = false, $dataProvides = []) {
         $this->dataFile = self::getProviderName();
         parent::__construct($do_reset);
     }
     
-    protected function makeData()
+    protected function makeData($dataProvides = [])
     {
         $translation_pasror = new ParsorTranslations();
         $this->data = $translation_pasror->parse();

@@ -42,7 +42,7 @@ class ProcessKeyPart
             'fx_exhaustLight_blue' => 'fx_gasBurst',
             'fx_smokeTrail_light' => 'fx_gasBurst',
             'fx_exhaustSparks_flameout' => 'fx_gasBurst',
-            'atmCurve' => 'atmosphere_curve',
+            'atmCurve' => 'atmosphere_curve_slope',
             'atmosphereCurve' => 'atmosphere_curve',
             'velCurve' => 'velocity_curve',
             'TemperatureModifier' => 'temperature_modifier',
@@ -165,27 +165,25 @@ class ProcessKeyPart
         $values = explode(' ', $value);
         $headers = array('Atmospher', 'ISP');
         
-        if (count($values) > 2) {
-            $headers[] = 'slope left';
-            $headers[] = 'slope right';
-        }
-        
         $this->complete($headers, $values);   
         
         return array_combine($headers, $values);
     }
-
+    
+    public function atmosphere_curve_slope($value)
+    {
+        $values = explode(' ', $value);
+        $headers = array('Atmospher', 'ISP_factor','slope left','slope right' );
+        $this->complete($headers, $values);   
+        
+        return array_combine($headers, $values);
+    }
+    
     public function velocity_curve($value)
     {
 
         $values = explode(' ', $value);
-        $headers = array('Velocity', '% thrust Max');
-
-        if (count($values) > 2) {
-            $headers[] = 'slope left';
-            $headers[] = 'slope right';
-        }
-
+        $headers = array('Velocity', 'thrust_factor','slope left','slope right' );
         $this->complete($headers, $values);   
 
         return array_combine($headers, $values);
