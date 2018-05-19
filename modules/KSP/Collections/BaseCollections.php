@@ -54,7 +54,7 @@ class BaseCollections {
         $bulkhead = $part['bulkheadProfiles'];
         $exploded = explode(',', $bulkhead);
         foreach($exploded as $item) {
-            if($item == 'srf') continue;
+            if(trim($item) == 'srf') continue;
             $output[] = trim($item);
         }
         return $output;
