@@ -28,7 +28,8 @@ class EngineCollections extends BaseCollections {
         return $this->collection;
     }
     
-    private function makeEnginesCollection() {  
+    private function makeEnginesCollection() {
+        $collection = [];
         $engines_names = $this->partsData['modules']['engines'];
         $local = $this->translationsData['locals'][0];
         $parts = $this->partsData['parts'];

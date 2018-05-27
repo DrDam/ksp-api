@@ -21,6 +21,7 @@ class MakeCollections {
     private $providersClass = [
         'engines' => 'KSP\EngineCollections',
         'fuelTanks' => 'KSP\TanksCollections',
+        'decouplers' => 'KSP\DecouplersCollections',
     ];
     private $providers = [];
         

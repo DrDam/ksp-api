@@ -29,6 +29,7 @@ class TanksCollections extends BaseCollections {
     }
     
     private function makeTankCollection() {  
+        $collection = [];
         $local = $this->translationsData['locals'][0];
         $parts = $this->partsData['parts'];
         foreach($parts as $part_id => $part) {
