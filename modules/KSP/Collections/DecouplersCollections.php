@@ -19,6 +19,10 @@ class DecouplersCollections extends BaseCollections {
     
     private $collection = [];
 
+    static public function getCollectionName() {
+        return 'decouplers';
+    }
+    
     public function __construct($providersData = []) {
         parent::__construct($providersData);
     }
@@ -43,8 +47,11 @@ class DecouplersCollections extends BaseCollections {
             
             $module = $coupleur['ModuleDecouple'];
             
+            // Controle omni découpleur
+            $is_omni = (isset($module['isOmniDecoupler']) && $module['isOmniDecoupler'] == true);
+            
             // avoid Engine Plates
-            if($module['isOmniDecoupler'] == false && $module['explosiveNodeID'] == 'bottom') {
+            if(!$is_omni && $module['explosiveNodeID'] == 'bottom') {
                 continue;
             }
 
@@ -52,7 +59,7 @@ class DecouplersCollections extends BaseCollections {
             $coupleur_data = $this->getBasicPartInformations($coupleur, $local);
             
             // Add OmniDecoupler information
-            $coupleur_data['isOmniDecoupler'] = ($module['isOmniDecoupler'] == 'false') ? false : true ;
+            $coupleur_data['isOmniDecoupler'] = $is_omni;
 
             $collection[$couplers_id] = $coupleur_data;
         }

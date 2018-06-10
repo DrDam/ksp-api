@@ -18,7 +18,11 @@ use KSP\BaseCollections;
 class EngineCollections extends BaseCollections {
     
     private $collection = [];
-
+    
+    static public function getCollectionName() {
+        return 'engines';
+    }
+    
     public function __construct($providersData = []) {
         parent::__construct($providersData);
     }

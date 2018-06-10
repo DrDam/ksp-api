@@ -28,6 +28,10 @@ class BaseCollections {
     ];
     protected $G0 = 9.81;
         
+    static public function getCollectionName() {
+        return 'base';
+    }
+    
     public function __construct($providersData = []) {
         
         $this->partsData = $providersData['Parts']->dump();
@@ -35,6 +39,10 @@ class BaseCollections {
     }    
     
     protected function getBasicPartInformations($part, $local) {
+        
+        $stack_top = $this->getStackItem($part, 'top');
+        $stack_bottom = $this->getStackItem($part, 'bottom');
+        
         $sizes = $this->getSizes($part);
         $output = [];
         $output['id'] = $part['name'];
@@ -43,15 +51,24 @@ class BaseCollections {
         $output['cost'] = (float) $part['cost'];
         $output['mass'] = ['empty' => (float) $part['mass'], 'full' => (float) $part['mass']];
         $output['stackable'] = [];
-        $output['stackable']['top'] = isset($part['node_stack_top']) ? (isset($sizes[0]) ? $sizes[0] : false) : false ;
-        $output['stackable']['bottom'] = isset($part['node_stack_bottom']) ? (isset($sizes[1]) ? $sizes[1] : $sizes[0]): false;
+        $output['stackable']['top'] = ($stack_top != NULL) ? (isset($sizes[0]) ? $sizes[0] : false) : false ;
+        $output['stackable']['bottom'] = ($stack_bottom != NULL) ? (isset($sizes[1]) ? $sizes[1] : $sizes[0]): false;
         $output['is_radial'] = ($part['attachRules']['Allow Stack'] == 0) ? true : false ;
         return $output;
     }
     
-    private function getSizes($part) {
+    protected function getSizes($part) {
         $output = [];
+        if(!isset($part['bulkheadProfiles'])) {
+            return [];
+        }
+        
         $bulkhead = $part['bulkheadProfiles'];
+        // Manage case of ModuleService add in making history
+        if(is_array($bulkhead)) {
+            return [$bulkhead[0]];
+        }
+        
         $exploded = explode(',', $bulkhead);
         foreach($exploded as $item) {
             if(trim($item) == 'srf') continue;
@@ -73,5 +90,23 @@ class BaseCollections {
                 }
                 
                 return $addMass;
+    }
+    
+    protected function getStackItem($part, $direction = 'top') {
+        $target = 'node_stack_'.$direction;
+        
+        // If simple exist
+        if(isset($part[$target])) {
+            return $target;
+        }
+        
+        foreach(array_keys($part) as $key){
+
+            if(strstr($key, $target)) {
+                return $key;
+            }
+        }
+        
+        return NULL;
     }
 }

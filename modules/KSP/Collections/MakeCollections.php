@@ -9,6 +9,7 @@
 namespace KSP;
 
 use KSP\EngineCollections;
+use Japloora\Base;
 /**
  * Description of MakeCollections
  *
@@ -17,18 +18,14 @@ use KSP\EngineCollections;
 class MakeCollections {
 
     private $collections = [];
-
-    private $providersClass = [
-        'engines' => 'KSP\EngineCollections',
-        'fuelTanks' => 'KSP\TanksCollections',
-        'decouplers' => 'KSP\DecouplersCollections',
-    ];
     private $providers = [];
         
     public function __construct($providersData = []) {
         
-        foreach($this->providersClass as $type => $class) {
-            $this->providers[$type] = new $class($providersData);
+        Base::discoverClasses('Collections');
+        $providersClasses = Base::getExtends('BaseCollections', 'KSP');
+        foreach($providersClasses as $class) {
+            $this->providers[$class::getCollectionName()] = new $class($providersData);
         }
     }
     
@@ -42,5 +39,4 @@ class MakeCollections {
         return $this->collections;
         
     }
-    
 }

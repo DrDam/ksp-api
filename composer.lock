@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/DrDam/Japloora.git",
-                "reference": "052d9e8b2cb0e94e1f4815e34484fcd24d491f8a"
+                "reference": "8ac2c51954756e59fd04478c64baa23e6aac3876"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DrDam/Japloora/zipball/052d9e8b2cb0e94e1f4815e34484fcd24d491f8a",
-                "reference": "052d9e8b2cb0e94e1f4815e34484fcd24d491f8a",
+                "url": "https://api.github.com/repos/DrDam/Japloora/zipball/8ac2c51954756e59fd04478c64baa23e6aac3876",
+                "reference": "8ac2c51954756e59fd04478c64baa23e6aac3876",
                 "shasum": ""
             },
             "require": {
@@ -46,7 +46,7 @@
                 }
             ],
             "description": "Just Another PHP Lightweight Object Oriented RestAPI",
-            "time": "2018-06-10T16:59:45+00:00"
+            "time": "2018-06-10T17:44:48+00:00"
         },
         {
             "name": "paragonie/random_compat",

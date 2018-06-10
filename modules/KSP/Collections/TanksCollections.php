@@ -19,6 +19,10 @@ class TanksCollections extends BaseCollections {
     
     private $collection = [];
 
+    static public function getCollectionName() {
+        return 'fuelTanks';
+    }
+    
     public function __construct($providersData = []) {
         parent::__construct($providersData);
     }

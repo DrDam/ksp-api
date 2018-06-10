@@ -7,9 +7,11 @@ class ProcessPart
 {
     private $modules = [];
     private $processor = NULL;
+    private $processors_keys = [];
     
     public function __construct() {
         $this->processor = new ProcessKeyPart();
+        $this->processors_keys = $this->processor->getProcessors();
     }
     
     public function extract($path)
@@ -131,10 +133,10 @@ class ProcessPart
             $old = $key;
             $key = $upper_key;
         }
-
-        $processors = $this->processor->getProcessors();
-        if (in_array($key, array_keys($processors))) {
-            $out = $this->processor->{$processors[$key]}($value);
+        
+        $out = [];
+        if (in_array($key, array_keys($this->processors_keys))) {
+            $out = $this->processor->{$this->processors_keys[$key]}($value);
             return $out;
         };
     }
