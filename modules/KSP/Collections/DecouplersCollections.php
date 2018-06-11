@@ -54,7 +54,7 @@ class DecouplersCollections extends BaseCollections {
             
             // Controle omni découpleur           
             if(!isset($module['isOmniDecoupler'])) {
-                $module['isOmniDecoupler'] = false;
+                $module['isOmniDecoupler'] = 'false';
             }
             
 
@@ -62,7 +62,7 @@ class DecouplersCollections extends BaseCollections {
             $coupleur_data = $this->getBasicPartInformations($coupleur, $local);
             
             // Add OmniDecoupler information
-            $coupleur_data['isOmniDecoupler'] = $module['isOmniDecoupler'];
+            $coupleur_data['isOmniDecoupler'] = ($module['isOmniDecoupler'] === 'true') ? true : false;
 
             $collection[$couplers_id] = $coupleur_data;
         }
