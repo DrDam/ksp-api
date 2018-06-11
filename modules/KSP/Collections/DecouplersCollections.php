@@ -47,19 +47,22 @@ class DecouplersCollections extends BaseCollections {
             
             $module = $coupleur['ModuleDecouple'];
             
-            // Controle omni découpleur
-            $is_omni = (isset($module['isOmniDecoupler']) && $module['isOmniDecoupler'] == true);
-            
             // avoid Engine Plates
-            if(!$is_omni && $module['explosiveNodeID'] == 'bottom') {
+            if($module['explosiveNodeID'] == 'bottom') {
                 continue;
             }
+            
+            // Controle omni découpleur           
+            if(!isset($module['isOmniDecoupler'])) {
+                $module['isOmniDecoupler'] = false;
+            }
+            
 
             // Basic informations
             $coupleur_data = $this->getBasicPartInformations($coupleur, $local);
             
             // Add OmniDecoupler information
-            $coupleur_data['isOmniDecoupler'] = $is_omni;
+            $coupleur_data['isOmniDecoupler'] = $module['isOmniDecoupler'];
 
             $collection[$couplers_id] = $coupleur_data;
         }
