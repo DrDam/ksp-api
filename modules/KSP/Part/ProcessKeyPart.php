@@ -24,6 +24,10 @@ class ProcessKeyPart
             'node_stack_bottom3'=> 'node_stack',
             'node_stack_bottom4'=> 'node_stack',
             'node_stack_direct' => 'node_stack',
+            'node_stack_A' => 'node_stack',
+            'node_stack_B' => 'node_stack',
+            'node_stack_C' => 'node_stack',
+            'node_stack_D' => 'node_stack',
             
             'emission'=>'prefab_emission',
             'energy'=>'prefab_emission',
@@ -68,6 +72,10 @@ class ProcessKeyPart
     public function node_stack($value)
     {
         $values = explode(',', $value);
+        foreach($values as $key => $value) {
+            $values[$key] = trim($value);
+        }
+        
         $headers = array('Position X', 'Position Y', 'Position Z', 'Angular X', 'Angular Y', 'Angular Z');
 
         if (count($values) > 6) {
