@@ -29,6 +29,12 @@ class CollectionsController extends ControllerBase
                 'scheme' => [ROUTE_PARAMETER_SCHEME_HTTP, ROUTE_PARAMETER_SCHEME_HTTPS],
                 'method' => [ROUTE_PARAMETER_METHOD_GET],
                 'callback' => 'getCollection',
+                'parameters' => [
+                     'src' => [
+                        'mandatory' => ROUTE_PARAMETER_OPTIONAL,
+                        'type' => ROUTE_PARAMETER_TYPE_STRING
+                     ],
+                ],
             ),
         );
     }
@@ -47,7 +53,10 @@ class CollectionsController extends ControllerBase
         $callback1 = [];
         $callback1['title'] = 'Get data of a part collection';
         $callback1['description'][] = 'Return all part inside a collection with a list of selected/computed values.';
+        $callback1['description'][] = 'Add provider selector : ?src=[provider]';
+        $callback1['providers'] = $this->getProviderList();
         $callback1['exemples'][] = '/collection/engines : Get all engines with selected values.';
+        $callback1['exemples'][] = '/collection/engines?src=squad : Get only stock engines.';
         $info['collection/*'] = $callback1;
         
         return ['datas'=>$info];
@@ -57,12 +66,18 @@ class CollectionsController extends ControllerBase
         return $this->lib->getProvider('Collections')->getCollections();
     }
     
+    public function getProviderList() {
+        return $this->lib->getProvider('Collections')->getProviderList();
+    }
+    
     public function getCollection()
     {
+        $source = ($this->parameters['Query']['src'] != '') ? $this->parameters['Query']['src'] : '';
+
         $query = $this->parameters['queryFragments'];
         $collection_name = $query[0];
         
-        $results = $this->lib->getProvider('Collections')->getCollection($collection_name);
+        $results = $this->lib->getProvider('Collections')->getCollection($collection_name, $source);
 
         if(count($results) == 0) {
             return ['datas'=>['no_result' => '']];

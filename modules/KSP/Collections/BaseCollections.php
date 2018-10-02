@@ -54,6 +54,7 @@ class BaseCollections {
         $output['stackable']['top'] = ($stack_top != NULL) ? (isset($sizes[0]) ? $sizes[0] : false) : false ;
         $output['stackable']['bottom'] = ($stack_bottom != NULL) ? (isset($sizes[1]) ? $sizes[1] : $sizes[0]): false;
         $output['is_radial'] = ($part['attachRules']['Allow Stack'] == 0) ? true : false ;
+        $output['provider'] = $part['provider'];
         return $output;
     }
     

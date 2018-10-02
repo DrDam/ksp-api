@@ -36,9 +36,33 @@ class CollectionsLib  extends KSPDataLibBase implements KSPDataInterface
         return array_keys($this->data);
     }
    
-    public function getCollection($name) {
+    public function getCollection($name, $source = '') {
         
-        return (isset($this->data[$name])) ? $this->data[$name] : [];
+        $collection = (isset($this->data[$name])) ? $this->data[$name] : [];
+        if($source == '') {
+            return $collection;
+        }
+        else {
+            foreach($collection as $partk_key => $part_data) {
+                if(strtolower($part_data['provider']) != strtolower($source)) {
+                    unset($collection[$partk_key]);
+                }
+            }
+            return (count($collection) > 0) ? $collection : [];
+        }
     }
-
+    
+    public function getProviderList() {
+        $provider_list = [];
+    
+        foreach($this->data as $collection_name => $collection) {
+            foreach($collection as $part_name => $part_data) {
+                if(!isset($provider_list[$part_data['provider']])) {
+                    $provider_list[$part_data['provider']] = strtolower($part_data['provider']);
+                }
+            }
+        }
+        
+        return array_values($provider_list);
+    }
 }
