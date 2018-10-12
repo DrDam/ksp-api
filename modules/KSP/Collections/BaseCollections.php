@@ -42,8 +42,7 @@ class BaseCollections {
         
         $stack_top = $this->getStackItem($part, 'top');
         $stack_bottom = $this->getStackItem($part, 'bottom');
-        
-        $sizes = $this->getSizes($part);
+
         $output = [];
         $output['id'] = $part['name'];
         $output['name'] = $this->translationsData['strings'][$part['title']][$local];
@@ -51,8 +50,8 @@ class BaseCollections {
         $output['cost'] = (float) $part['cost'];
         $output['mass'] = ['empty' => (float) $part['mass'], 'full' => (float) $part['mass']];
         $output['stackable'] = [];
-        $output['stackable']['top'] = ($stack_top != NULL) ? (isset($sizes[0]) ? $sizes[0] : false) : false ;
-        $output['stackable']['bottom'] = ($stack_bottom != NULL) ? (isset($sizes[1]) ? $sizes[1] : $sizes[0]): false;
+        $output['stackable']['top'] = ($stack_top != NULL) ? $part[$stack_top]['Size']  : false ;
+        $output['stackable']['bottom'] = ($stack_bottom != NULL) ? $part[$stack_bottom]['Size'] : false;
         $output['is_radial'] = ($part['attachRules']['Allow Stack'] == 0) ? true : false ;
         $output['provider'] = $part['provider'];
         return $output;
