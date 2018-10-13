@@ -1,9 +1,0 @@
-[13-Oct-2018 10:58:32 Europe/Berlin] QUERY DATAS :: a:5:{s:7:"Headers";a:7:{s:4:"host";a:1:{i:0;s:17:"ksp.api.localhost";}s:10:"user-agent";a:1:{i:0;s:76:"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0";}s:6:"accept";a:1:{i:0;s:63:"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";}s:15:"accept-language";a:1:{i:0;s:35:"fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3";}s:15:"accept-encoding";a:1:{i:0;s:13:"gzip, deflate";}s:10:"connection";a:1:{i:0;s:10:"keep-alive";}s:25:"upgrade-insecure-requests";a:1:{i:0;s:1:"1";}}s:6:"Schema";s:4:"http";s:6:"Method";s:3:"GET";s:4:"Path";s:5:"/dump";s:5:"Query";a:1:{s:5:"reset";s:5:"reset";}}
-[13-Oct-2018 10:58:32 Europe/Berlin] ROUTED PATH :: /dump
-[13-Oct-2018 10:58:32 Europe/Berlin] RUNABLE CALLBACK :: KSP\HomeController->getDump
-[13-Oct-2018 10:58:32 Europe/Berlin] PHP Notice:  Undefined index: explosiveNodeID in /var/www/ksp-api/modules/KSP/Collections/DecouplersCollections.php on line 51
-[13-Oct-2018 10:58:32 Europe/Berlin] PHP Notice:  Undefined index: explosiveNodeID in /var/www/ksp-api/modules/KSP/Collections/DecouplersCollections.php on line 51
-[13-Oct-2018 10:58:32 Europe/Berlin] PHP Notice:  Undefined index: explosiveNodeID in /var/www/ksp-api/modules/KSP/Collections/DecouplersCollections.php on line 51
-[13-Oct-2018 10:58:32 Europe/Berlin] PHP Notice:  Undefined index: explosiveNodeID in /var/www/ksp-api/modules/KSP/Collections/DecouplersCollections.php on line 51
-[13-Oct-2018 10:58:32 Europe/Berlin] PHP Notice:  Undefined index: explosiveNodeID in /var/www/ksp-api/modules/KSP/Collections/DecouplersCollections.php on line 51
-[13-Oct-2018 10:58:32 Europe/Berlin] PHP Notice:  Undefined index: explosiveNodeID in /var/www/ksp-api/modules/KSP/Collections/DecouplersCollections.php on line 51
