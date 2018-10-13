@@ -19,6 +19,7 @@ class ProcessKeyPart
             'node_stack_connect1'=> 'node_stack',
             'node_stack_connect2'=> 'node_stack',
             'node_stack_connect3'=> 'node_stack',
+            'node_stack_bottom1' => 'node_stack',
             'node_stack_bottom2'=> 'node_stack',
             'node_stack_bottom2'=> 'node_stack',
             'node_stack_bottom3'=> 'node_stack',

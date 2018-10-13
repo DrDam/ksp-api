@@ -43,6 +43,33 @@ class BaseCollections {
         $stack_top = $this->getStackItem($part, 'top');
         $stack_bottom = $this->getStackItem($part, 'bottom');
 
+        $sizes = $this->getSizes($part);
+        
+        $top_size = false;
+        if($stack_top != NULL) {
+            if(isset($part[$stack_top]['Size'])) {
+                $top_size = $part[$stack_top]['Size'];
+            }
+            else {
+                $top_size = $sizes[0];
+            }
+        }
+        
+        $bottom_size = false;
+        if($stack_bottom != NULL) {
+            if(isset($part[$stack_bottom]['Size'])) {
+                $bottom_size = $part[$stack_bottom]['Size'];
+            }
+            else {
+                if(count($sizes) == 1){
+                    $bottom_size = $sizes[0];
+                }
+                else {
+                    $bottom_size = $sizes[1];
+                }
+            }
+        }
+        
         $output = [];
         $output['id'] = $part['name'];
         $output['name'] = $this->translationsData['strings'][$part['title']][$local];
@@ -50,8 +77,8 @@ class BaseCollections {
         $output['cost'] = (float) $part['cost'];
         $output['mass'] = ['empty' => (float) $part['mass'], 'full' => (float) $part['mass']];
         $output['stackable'] = [];
-        $output['stackable']['top'] = ($stack_top != NULL) ? $part[$stack_top]['Size']  : false ;
-        $output['stackable']['bottom'] = ($stack_bottom != NULL) ? $part[$stack_bottom]['Size'] : false;
+        $output['stackable']['top'] = $top_size;
+        $output['stackable']['bottom'] = $bottom_size;
         $output['is_radial'] = ($part['attachRules']['Allow Stack'] == 0) ? true : false ;
         $output['provider'] = $part['provider'];
         return $output;
@@ -66,13 +93,13 @@ class BaseCollections {
         $bulkhead = $part['bulkheadProfiles'];
         // Manage case of ModuleService add in making history
         if(is_array($bulkhead)) {
-            return [$bulkhead[0]];
+            return str_replace('size', '', [$bulkhead[0]]);
         }
         
         $exploded = explode(',', $bulkhead);
         foreach($exploded as $item) {
             if(trim($item) == 'srf') continue;
-            $output[] = trim($item);
+            $output[] = trim(str_replace('size', '',$item));
         }
         return $output;
     }
