@@ -37,8 +37,10 @@ class TanksCollections extends BaseCollections {
         $local = $this->translationsData['locals'][0];
         $parts = $this->partsData['parts'];
         foreach($parts as $part_id => $part) {
-            if($part['category'] != 'FuelTank') continue;
+            if($part['category'] != 'FuelTank' && $part['category'] != 'Propulsion') continue;
             if($part_id == 'fuelLine') continue;
+            if(!isset($part['RESSOURCE'])) continue;
+            
             
             $fuelTank = $this->getBasicPartInformations($part, $local);
    
