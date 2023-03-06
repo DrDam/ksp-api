@@ -1,19 +1,20 @@
 <?php
 
-namespace KSP;
-use KSP\ProcessKeyPart;
+namespace KSP\Part;
+
+use KSP\Part\ProcessKeyPart;
 
 class ProcessPart
 {
     private $modules = [];
     private $processor = NULL;
     private $processors_keys = [];
-    
+
     public function __construct() {
         $this->processor = new ProcessKeyPart();
         $this->processors_keys = $this->processor->getProcessors();
     }
-    
+
     public function extract($path)
     {
         unset($this->modules);
@@ -54,13 +55,13 @@ class ProcessPart
 
             // If line containe data
             if (strstr($ligne, '=')) {
-                
+
                 // Delete comments
                 if(strstr($ligne, '//')) {
                     $exploded = explode('//', $ligne);
                     $ligne = $exploded[0];
                 }
-                
+
                 $elem = explode('=', $ligne);
                 $key = trim($elem[0]);
                 $value = trim($elem[1]);
@@ -77,7 +78,7 @@ class ProcessPart
                 $this->putData($data, $type_sanitize, $sub, $upper_key);
                 continue;
             }
-            
+
             $nb_line++;
         }
         return $data;
@@ -127,13 +128,13 @@ class ProcessPart
         if (is_array($value)) {
             return $value;
         }
-        
+
         $old = '';
         if ($key == 'key') {
             $old = $key;
             $key = $upper_key;
         }
-        
+
         $out = [];
         if (in_array($key, array_keys($this->processors_keys))) {
             $out = $this->processor->{$this->processors_keys[$key]}($value);

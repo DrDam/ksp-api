@@ -1,9 +1,9 @@
 <?php
 
-namespace KSP;
+namespace KSP\Part;
 
-use KSP\ProcessPart;
-use KSP\ModulesPart;
+use KSP\Part\ProcessPart;
+use KSP\Part\ModulesPart;
 
 /**
  * Description of KSPParsorLib
@@ -17,7 +17,7 @@ class ParsorPart
     private $moduleProcessor = null;
     private $partData = [];
     private $modules = [];
-    
+
     public function __construct()
     {
         $this->processor = new ProcessPart();
@@ -44,13 +44,13 @@ class ParsorPart
                     if ($extracted == null) {
                         continue;
                     }
-                    $provider_tag = $this->getProvider($dirdata);   
+                    $provider_tag = $this->getProvider($dirdata);
                     $partData = $extracted['part'];
                     $partModules = $extracted['modules'];
 
                     $partData['category'] = isset($partData['category']) ? $partData['category'] : 'none' ;
                     $partData['provider'] = $provider_tag;
-                    
+
                     $this->partData[$partData['name']] = $partData;
                     $this->updateModules($partModules, $partData['name']);
                 } else {
@@ -61,32 +61,32 @@ class ParsorPart
     }
 
     private function updateModules($new_modules = [], $part_name = '') {
-        
+
         foreach($new_modules as $key) {
-            
+
             $translated_key = $this->moduleProcessor->getModule($key);
-            
+
             $this->modules[$translated_key][] = $part_name;
         }
     }
-    
+
     private function getProvider($dirData)
     {
-                
+
         $partKeyId = array_search('Parts', $dirData);
-        
+
         $provider = [];
-        
+
         // $dirData = [. , "GameData" , MOD , [.some.Folders.] , "Parts" , CAT , [.some.Folders.] ];
         for ($i = 2; $i < $partKeyId; $i++) {
             $provider[] = $dirData[$i];
         }
-        
+
         $provider_tag = implode('/', $provider);
 
         return $provider_tag;
     }
-    
+
     private function scanDir($dir)
     {
         $directory = scandir($dir);

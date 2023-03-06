@@ -1,6 +1,6 @@
 <?php
 
-namespace KSP;
+namespace KSP\Translations;
 
 /**
  * Description of KSPParsorLib
@@ -10,7 +10,7 @@ namespace KSP;
 class ParsorTranslations
 {
     private $dir = './GameData';
-    
+
     public function parse()
     {
         return $this->navigate($this->dir);
@@ -25,13 +25,13 @@ class ParsorTranslations
             $path = $dir . '/' . $file;
             if (is_dir($path)) {
                 $dive = $this->navigate($path);
-                $locals = array_merge($locals, $dive['locals']);                
-                $strings = array_merge($strings, $dive['strings']);                
+                $locals = array_merge($locals, $dive['locals']);
+                $strings = array_merge($strings, $dive['strings']);
             } else {
                 if($file == 'dictionary.cfg') {
                     $translations = $this->extract($path);
-                    $locals = array_merge($locals, $translations['locals']);                
-                    $strings = array_merge($strings, $translations['strings']);   
+                    $locals = array_merge($locals, $translations['locals']);
+                    $strings = array_merge($strings, $translations['strings']);
                 }
                 else {
                     continue;
@@ -43,7 +43,7 @@ class ParsorTranslations
         $output['strings'] = $strings;
         return $output;
     }
-    
+
     private function scanDir($dir)
     {
         $directory = scandir($dir);
@@ -61,7 +61,7 @@ class ParsorTranslations
         $strings = [];
         $file = file($path);
         // start on line 3 ( ﻿Localization + {
-        
+
         $nb_line = 2;
         $max = count($file);
         $version = 'en-us';

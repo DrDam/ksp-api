@@ -2,7 +2,7 @@
 
 namespace KSP;
 
-use KSP\ParsorPart;
+use KSP\Part\ParsorPart;
 use KSP\KSPDataInterface;
 use KSP\KSPDataLibBase;
 /**
@@ -10,17 +10,17 @@ use KSP\KSPDataLibBase;
  *
  * @author drdam
  */
-class PartLib extends KSPDataLibBase implements KSPDataInterface 
+class PartLib extends KSPDataLibBase implements KSPDataInterface
 {
     public static function getProviderName() {
         return 'Parts';
     }
-    
+
     public function __construct($do_reset = false, $dataProvides = []) {
         $this->dataFile = self::getProviderName();
         parent::__construct($do_reset);
     }
-        
+
     protected function makeData($dataProvides = [])
     {
         $parsor = new ParsorPart();
@@ -28,7 +28,7 @@ class PartLib extends KSPDataLibBase implements KSPDataInterface
     }
     public function getParts($parts = [], $keys = NULL) {
         $parts_data = $this->data['parts'];
-        
+
         $out = [];
 
         foreach ($parts as $part) {
@@ -38,7 +38,7 @@ class PartLib extends KSPDataLibBase implements KSPDataInterface
                 if(is_array($keys)) {
                     $item = [];
                     foreach($keys as $key_item) {
-                        
+
                         $part_data = $part_item;
                         $key_data = explode('.', $key_item);
                         foreach($key_data as $diver) {
@@ -51,11 +51,11 @@ class PartLib extends KSPDataLibBase implements KSPDataInterface
                     }
                     $part_item = $item;
                 }
-                
+
                 $out[$part] = $part_item;
             }
         }
-        
+
         return $out;
     }
 }

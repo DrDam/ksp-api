@@ -1,6 +1,6 @@
 <?php
 
-namespace KSP;
+namespace KSP\Part;
 
 class ProcessKeyPart
 {
@@ -29,16 +29,16 @@ class ProcessKeyPart
             'node_stack_B' => 'node_stack',
             'node_stack_C' => 'node_stack',
             'node_stack_D' => 'node_stack',
-            
+
             'emission'=>'prefab_emission',
             'energy'=>'prefab_emission',
             'speed'=>'prefab_emission',
             'volume'=>'prefab_emission',
             'pitch'=>'prefab_emission',
-            'localOffset'=>'local_offset',           
-            
+            'localOffset'=>'local_offset',
+
             'node_attach'=> 'node_stack',
-            
+
             // Modules from Wiki
             'ejectDirection' => 'vector_offset',
             'center' => 'local_offset',
@@ -56,7 +56,7 @@ class ProcessKeyPart
             'velCurve' => 'velocity_curve',
             'TemperatureModifier' => 'temperature_modifier',
             'ThermalEfficiency' => 'thermal_efficiency',
-            
+
             // Not in wiki
             'CenterOfBuoyancy'=>'node_attach',
             'CenterOfDisplacement'=>'node_attach',
@@ -76,65 +76,65 @@ class ProcessKeyPart
         foreach($values as $key => $value) {
             $values[$key] = trim($value);
         }
-        
+
         $headers = array('Position X', 'Position Y', 'Position Z', 'Angular X', 'Angular Y', 'Angular Z');
 
         if (count($values) > 6) {
             $headers[] = 'Size';
         }
-        
-        $this->complete($headers, $values);     
-        
+
+        $this->complete($headers, $values);
+
         return array_combine($headers, $values);
     }
-    
+
     public function node_attach($value)
     {
 
         $values = explode(',', $value);
         $headers = array('stack', 'SrfAttach', 'allowStack', 'allowSrfAttach', 'allowCollision');
 
-        $this->complete($headers, $values);      
+        $this->complete($headers, $values);
 
         return array_combine($headers, $values);
     }
-    
+
     public function vector_offset($value)
     {
         $values = explode(',', $value);
         $headers = array('X Direction', 'Y Direction', 'Z Direction');
- 
-        $this->complete($headers, $values);      
+
+        $this->complete($headers, $values);
 
         return array_combine($headers, $values);
     }
-    
+
     public function prefab_emission($value)
     {
         $values = explode(' ', $value);
         $headers = array('Throttle Range', 'Scale');
 
-        $this->complete($headers, $values);      
+        $this->complete($headers, $values);
 
         return array_combine($headers, $values);
     }
-    
+
     public function temperature_modifier($value)
     {
         $values = explode(' ', $value);
         $headers = array('Temperature', 'Modifier');
 
-        $this->complete($headers, $values);      
+        $this->complete($headers, $values);
 
         return array_combine($headers, $values);
     }
-    
+
     public function thermal_efficiency($value)
     {
         $values = explode(' ', $value);
         $headers = array('Temperature', 'Efficiency');
 
-        $this->complete($headers, $values);      
+        $this->complete($headers, $values);
 
         return array_combine($headers, $values);
     }
@@ -143,18 +143,18 @@ class ProcessKeyPart
         $values = explode(',', $value);
         $headers = array('X', 'Y', 'Z');
 
-        $this->complete($headers, $values);       
+        $this->complete($headers, $values);
 
         return array_combine($headers, $values);
     }
-    
+
     public function attach_rules($value)
     {
 
         $values = explode(',', $value);
         $headers = array('Stack', 'Surface Attach', 'Allow Stack', 'Allow Surface Attach', 'Allow Collision');
 
-        $this->complete($headers, $values); 
+        $this->complete($headers, $values);
 
         return array_combine($headers, $values);
     }
@@ -167,37 +167,37 @@ class ProcessKeyPart
         if (count($values) > 7) {
             $headers[] = 'deactivate';
         }
-        
-        $this->complete($headers, $values);     
-        
+
+        $this->complete($headers, $values);
+
         return array_combine($headers, $values);
     }
-    
+
     public function atmosphere_curve($value)
     {
         $values = explode(' ', $value);
         $headers = array('Atmospher', 'ISP');
-        
-        $this->complete($headers, $values);   
-        
+
+        $this->complete($headers, $values);
+
         return array_combine($headers, $values);
     }
-    
+
     public function atmosphere_curve_slope($value)
     {
         $values = explode(' ', $value);
         $headers = array('Atmospher', 'ISP_factor','slope left','slope right' );
-        $this->complete($headers, $values);   
-        
+        $this->complete($headers, $values);
+
         return array_combine($headers, $values);
     }
-    
+
     public function velocity_curve($value)
     {
 
         $values = explode(' ', $value);
         $headers = array('Velocity', 'thrust_factor','slope left','slope right' );
-        $this->complete($headers, $values);   
+        $this->complete($headers, $values);
 
         return array_combine($headers, $values);
     }
@@ -208,8 +208,8 @@ class ProcessKeyPart
         $values = explode(' ', $value);
         $headers = array('Speed', 'Angle');
 
-        $this->complete($headers, $values); 
-        
+        $this->complete($headers, $values);
+
         return array_combine($headers, $values);
     }
 
@@ -217,18 +217,18 @@ class ProcessKeyPart
     {
         $values = explode(' ', $value);
         $headers = array('Speed', 'Torque X', 'Torque Y', 'Torque Z');
-        
-        $this->complete($headers, $values); 
-        
+
+        $this->complete($headers, $values);
+
         return array_combine($headers, $values);
     }
 
-    
+
     private function complete(&$headers, &$values) {
         $this->completeSize($headers, count($values));
-        $this->completeSize($values, count($headers));  
+        $this->completeSize($values, count($headers));
     }
-    
+
     private function completeSize(&$array, $size) {
         $i = 0;
         while ($size > count($array)) {

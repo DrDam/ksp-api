@@ -6,9 +6,9 @@
  * and open the template in the editor.
  */
 
-namespace KSP;
+namespace KSP\Collections;
 
-use KSP\BaseCollections;
+use KSP\Collections\BaseCollections;
 
 /**
  * Description of MakeCollections
@@ -16,23 +16,23 @@ use KSP\BaseCollections;
  * @author drdam
  */
 class TanksCollections extends BaseCollections {
-    
+
     private $collection = [];
 
     static public function getCollectionName() {
         return 'fuelTanks';
     }
-    
+
     public function __construct($providersData = []) {
         parent::__construct($providersData);
     }
-    
+
     public function make() {
         $this->makeTankCollection();
         return $this->collection;
     }
-    
-    private function makeTankCollection() {  
+
+    private function makeTankCollection() {
         $collection = [];
         $local = $this->translationsData['locals'][0];
         $parts = $this->partsData['parts'];
@@ -40,14 +40,14 @@ class TanksCollections extends BaseCollections {
             if($part['category'] != 'FuelTank' && $part['category'] != 'Propulsion') continue;
             if($part_id == 'fuelLine') continue;
             if(!isset($part['RESSOURCE'])) continue;
-            
-            
+
+
             $fuelTank = $this->getBasicPartInformations($part, $local);
-   
+
             // Add Fuel Mass
             $addMass = $this->addRessourceMass($part);
             $fuelTank['mass']['full'] += $addMass;
-            
+
             // Add Ressources
              $ressources = $part['RESSOURCE'];
             if(isset($ressources[0])) {
@@ -58,7 +58,7 @@ class TanksCollections extends BaseCollections {
             else {
                 $fuelTank['ressources'][$ressources['name']] = $ressources['amount'];
             }
-            
+
             $collection[$part_id] = $fuelTank;
         }
         $this->collection = $collection;

@@ -6,9 +6,9 @@
  * and open the template in the editor.
  */
 
-namespace KSP;
+namespace KSP\Collections;
 
-use KSP\BaseCollections;
+use KSP\Collections\BaseCollections;
 
 /**
  * Description of MakeCollections
@@ -16,22 +16,22 @@ use KSP\BaseCollections;
  * @author drdam
  */
 class EngineCollections extends BaseCollections {
-    
+
     private $collection = [];
-    
+
     static public function getCollectionName() {
         return 'engines';
     }
-    
+
     public function __construct($providersData = []) {
         parent::__construct($providersData);
     }
-    
+
     public function make() {
         $this->makeEnginesCollection();
         return $this->collection;
     }
-    
+
     private function makeEnginesCollection() {
         $collection = [];
         $engines_names = $this->partsData['modules']['engines'];
@@ -39,17 +39,17 @@ class EngineCollections extends BaseCollections {
         $parts = $this->partsData['parts'];
         foreach($engines_names as $engine_id) {
             $engine = $parts[$engine_id];
-            
+
             // Avoid "Size1p5_Tank_05" part
             if($engine['category'] == 'FuelTank') {
                 continue;
             }
-            
+
             $engine_data = [];
-            
+
             // Basic informations
             $engine_data = $this->getBasicPartInformations($engine, $local);
-            
+
             // Engine Burning informations
             $ModuleEngine = (isset($engine['ModuleEnginesFX'])) ? $engine['ModuleEnginesFX'] : $engine['ModuleEngines'];
             $data = [];
@@ -65,23 +65,23 @@ class EngineCollections extends BaseCollections {
                 $Modedata = $this->extractEngineCaracteristics($ModuleEngine);
                 $data[$Modedata['type']][] = $Modedata;
             }
-            
+
             // Manage FuelTank-Engine
             if(isset($engine['RESSOURCE'])) {
                 $addMass = $this->addRessourceMass($engine);
                 $engine_data['mass']['full'] += $addMass;
             }
-            
-            $engine_data['modes'] = $data;            
+
+            $engine_data['modes'] = $data;
             $collection[$engine_id] = $engine_data;
         }
         $this->collection = $collection;
     }
-    
+
     private function extractEngineCaracteristics($engineData) {
         $output = [];
         $type = $engineData['EngineType'];
-                
+
         if($type != 'Turbine') {
             $completeCurve = $this->makeSimpleCurve($engineData);
             $consumptions = $this->getConsumptions($engineData, $completeCurve['conso']);
@@ -99,7 +99,7 @@ class EngineCollections extends BaseCollections {
         $output['type'] = $type;
         return $output;
     }
-    
+
     private function makeSimpleCurve($engineData) {
         $completeCurve = [];
         $consump = null;
@@ -123,11 +123,11 @@ class EngineCollections extends BaseCollections {
             $data['ISP'] = (float) $point['ISP'];
             $data['Thrust'] = (float) round($point['ISP'] * $this->G0 * $consump, 4);
             $completeCurve[] = $data;
-        }  
-        
+        }
+
         return  ['conso' => $consump, 'curve' => $completeCurve];
     }
-    
+
     private function getConsumptions($engineData, $conso) {
         $fuels = [];
         $tot = 0;
@@ -138,15 +138,15 @@ class EngineCollections extends BaseCollections {
                 $tot += $fuels[$type] * $mass;
             }
         }
-        
+
         if(count($fuels) == 0 ) {
             $fuels = 'fuck';
             return ['fuels' => 'fuck', 'unit' => 'fuck'];
         }
-        
+
         return ['fuels' => $fuels, 'unit' => $conso / ($tot / count($fuels))];
     }
-    
+
     private function makeJetCurve($engineData) {
         $ISPCurveOutput = [];
         $ISP = $engineData['atmosphereCurve']['key']['ISP'];
@@ -170,7 +170,7 @@ class EngineCollections extends BaseCollections {
             $data['slop_right'] =  (float) $point['slope right'];
             $ThrustCurve[] = $data;
         }
-        
+
         return  ['ISP' => $ISPCurveOutput, 'Thrust' => $ThrustCurve];
     }
 
